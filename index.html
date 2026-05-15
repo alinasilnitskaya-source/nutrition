@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Нутрициология — База знаний</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; }
+.page { max-width: 900px; margin: 0 auto; padding: 48px 28px 80px; }
+
+.hero { text-align: center; margin-bottom: 40px; }
+.hero-title { font-size: 32px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; letter-spacing: -.02em; }
+.hero-sub { font-size: 15px; color: #888; margin-bottom: 24px; }
+.stats-row { display: inline-flex; border: 1px solid #e8e8e8; border-radius: 12px; overflow: hidden; }
+.stat { padding: 12px 24px; text-align: center; border-right: 1px solid #e8e8e8; }
+.stat:last-child { border-right: none; }
+.stat-n { font-size: 20px; font-weight: 700; color: #1a1a1a; line-height: 1; margin-bottom: 4px; }
+.stat-l { font-size: 11px; color: #aaa; }
+
+.sec { display: flex; align-items: center; gap: 10px; margin: 36px 0 14px; }
+.sec-name { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: .1em; white-space: nowrap; }
+.sec-line { flex: 1; height: 1px; background: #f0f0f0; }
+.sec-count { font-size: 11px; color: #bbb; white-space: nowrap; }
+
+.group-block { margin-bottom: 12px; }
+.group-label { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
+.gdot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.gname { font-size: 10px; font-weight: 600; color: #bbb; text-transform: uppercase; letter-spacing: .1em; }
+
+.cards { display: grid; gap: 7px; }
+.c2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.c3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.c5 { grid-template-columns: repeat(5, minmax(0,1fr)); }
+.c6 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+
+@media (max-width: 600px) {
+  .c2,.c3,.c5,.c6 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #ebebeb;
+  border-radius: 12px;
+  padding: 14px 13px 12px;
+  cursor: pointer;
+  border-top: 3px solid;
+  transition: box-shadow .15s, transform .15s;
+  text-decoration: none;
+  display: block;
+}
+.card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.07); transform: translateY(-2px); }
+
+.card-emoji { font-size: 22px; margin-bottom: 9px; display: block; line-height: 1; }
+.card-name { font-size: 12px; font-weight: 600; color: #1a1a1a; line-height: 1.4; margin-bottom: 4px; }
+.card-interest { font-size: 11px; color: #aaa; line-height: 1.4; }
+
+.ct  { border-top-color: #1D9E75; }
+.cp  { border-top-color: #7F77DD; }
+.cpk { border-top-color: #D4537E; }
+.ca  { border-top-color: #BA7517; }
+.cc  { border-top-color: #D85A30; }
+.cbl { border-top-color: #378ADD; }
+
+.sys-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 7px; }
+@media (max-width: 600px) { .sys-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+
+.sys-card {
+  background: #ffffff;
+  border: 1px solid #ebebeb;
+  border-radius: 10px;
+  padding: 11px 11px 9px;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  transition: box-shadow .15s;
+}
+.sys-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+.sys-card.empty { opacity: .45; border-style: dashed; }
+.sys-emoji { font-size: 18px; margin-bottom: 6px; display: block; }
+.sys-name { font-size: 11px; font-weight: 600; color: #1a1a1a; line-height: 1.4; margin-bottom: 3px; }
+.sys-count { font-size: 10px; color: #bbb; }
+.sys-count.has { color: #1D9E75; font-weight: 500; }
+.sys-sub { font-size: 10px; color: #aaa; line-height: 1.4; margin: 3px 0 4px; }
+
+.res-block {
+  margin-top: 28px;
+  padding: 16px 18px;
+  background: #ffffff;
+  border: 1px solid #ebebeb;
+  border-radius: 12px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: box-shadow .15s;
+}
+.res-block:hover { box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+.res-emoji { font-size: 26px; flex-shrink: 0; }
+.res-title { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 3px; }
+.res-sub { font-size: 12px; color: #aaa; }
+.res-arr { margin-left: auto; font-size: 18px; color: #ccc; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; padding-top: 20px; border-top: 1px solid #f0f0f0; }
+.leg { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #aaa; }
+.ldot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hero">
+  <div class="hero-title">🌿 Нутрициология</div>
+  <div class="hero-sub">База знаний — здоровье, питание, образ жизни</div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n">19</div><div class="stat-l">Областей</div></div>
+    <div class="stat"><div class="stat-n">14</div><div class="stat-l">Систем</div></div>
+    <div class="stat"><div class="stat-n">35+</div><div class="stat-l">Тем</div></div>
+  </div>
+</div>
+
+<div class="sec">
+  <span class="sec-name">Области</span>
+  <div class="sec-line"></div>
+  <span class="sec-count">19 точек входа</span>
+</div>
+
+<div class="group-block">
+  <div class="group-label"><div class="gdot" style="background:#1D9E75"></div><span class="gname">База</span></div>
+  <div class="cards c3">
+    <a class="card ct" href="https://witty-lint-e19.notion.site/20d2e7475de280eeba40c31760e27611">
+      <span class="card-emoji">🥦</span>
+      <div class="card-name">Питание</div>
+      <div class="card-interest">Что есть, как есть, зачем</div>
+    </a>
+    <a class="card ct" href="https://witty-lint-e19.notion.site/20c2e7475de280faa2d5e172f7cf11f6">
+      <span class="card-emoji">🧪</span>
+      <div class="card-name">Нутриенты и вещества</div>
+      <div class="card-interest">Витамины, минералы, БАДы</div>
+    </a>
+    <a class="card ct" href="https://witty-lint-e19.notion.site/20c2e7475de280a994afd9bc59da7033">
+      <span class="card-emoji">🫀</span>
+      <div class="card-name">Физиология и болезни</div>
+      <div class="card-interest">Как устроено тело, патологии</div>
+    </a>
+  </div>
+</div>
+
+<div class="group-block">
+  <div class="group-label"><div class="gdot" style="background:#378ADD"></div><span class="gname">Физиология и диагностика</span></div>
+  <div class="cards c2">
+    <a class="card cbl" href="https://witty-lint-e19.notion.site/20c2e7475de2815e8081e520a90b2b28">
+      <span class="card-emoji">🔬</span>
+      <div class="card-name">Анализы и диагностика</div>
+      <div class="card-interest">Маркеры, нормы, как читать результаты</div>
+    </a>
+    <a class="card cbl" href="https://witty-lint-e19.notion.site/20c2e7475de280a994afd9bc59da7033">
+      <span class="card-emoji">🩺</span>
+      <div class="card-name">Симптомы и состояния</div>
+      <div class="card-interest">Что болит, почему, что делать</div>
+    </a>
+  </div>
+</div>
+
+<div class="group-block">
+  <div class="group-label"><div class="gdot" style="background:#7F77DD"></div><span class="gname">Наука</span></div>
+  <div class="cards c2">
+    <a class="card cp" href="https://witty-lint-e19.notion.site/20c2e7475de2803e8af8ca2f881d5134">
+      <span class="card-emoji">🧬</span>
+      <div class="card-name">Генетика и эпигенетика</div>
+      <div class="card-interest">Гены, метилирование, нутригеномика</div>
+    </a>
+    <a class="card cp" href="https://witty-lint-e19.notion.site/20c2e7475de280c7921ed7d61bca6d24">
+      <span class="card-emoji">⏳</span>
+      <div class="card-name">ANTI AGE и старение</div>
+      <div class="card-interest">Долголетие, клеточное здоровье</div>
+    </a>
+  </div>
+</div>
+
+<div class="group-block">
+  <div class="group-label"><div class="gdot" style="background:#D4537E"></div><span class="gname">Целевые группы</span></div>
+  <div class="cards c5">
+    <a class="card cpk" href="https://witty-lint-e19.notion.site/20c2e7475de280efa78ddcc69529b52f">
+      <span class="card-emoji">🌸</span>
+      <div class="card-name">Женское здоровье</div>
+      <div class="card-interest">Гормоны, цикл, беременность</div>
+    </a>
+    <a class="card cpk" href="https://witty-lint-e19.notion.site/20c2e7475de2802db7ecdadf361b769b">
+      <span class="card-emoji">💪</span>
+      <div class="card-name">Мужское здоровье</div>
+      <div class="card-interest">Тестостерон, энергия, сила</div>
+    </a>
+    <a class="card cpk" href="https://witty-lint-e19.notion.site/20c2e7475de280d5b0cbd082f0f2ac5c">
+      <span class="card-emoji">🧒</span>
+      <div class="card-name">Детское здоровье</div>
+      <div class="card-interest">Развитие, питание, иммунитет</div>
+    </a>
+    <a class="card cpk" href="https://witty-lint-e19.notion.site/3612e7475de280e3a6a8ceab1114db36">
+      <span class="card-emoji">✨</span>
+      <div class="card-name">Красота и внешность</div>
+      <div class="card-interest">Кожа, волосы, ногти</div>
+    </a>
+    <a class="card cpk" href="https://witty-lint-e19.notion.site/3612e7475de280b0a4fecddb5cfefe29">
+      <span class="card-emoji">⚖️</span>
+      <div class="card-name">Вес и метаболизм</div>
+      <div class="card-interest">Снижение веса, ИР, энергия</div>
+    </a>
+  </div>
+</div>
+
+<div class="group-block">
+  <div class="group-label"><div class="gdot" style="background:#BA7517"></div><span class="gname">Образ жизни</span></div>
+  <div class="cards c6">
+    <a class="card ca" href="https://witty-lint-e19.notion.site/20c2e7475de280a3abc9d8358f9ab8f3">
+      <span class="card-emoji">⚡</span>
+      <div class="card-name">Стресс и адаптация</div>
+      <div class="card-interest">Кортизол, HPA, адаптогены</div>
+    </a>
+    <a class="card ca" href="https://witty-lint-e19.notion.site/20c2e7475de2801eaf5feb230caf28da">
+      <span class="card-emoji">🧠</span>
+      <div class="card-name">Ментальное здоровье</div>
+      <div class="card-interest">Настроение, тревога, нейромедиаторы</div>
+    </a>
+    <a class="card ca" href="https://witty-lint-e19.notion.site/20c2e7475de28051a051da32a5b57d2a">
+      <span class="card-emoji">🌿</span>
+      <div class="card-name">Безопасная среда</div>
+      <div class="card-interest">Токсины, экология, ксенобиотики</div>
+    </a>
+    <a class="card ca" href="https://witty-lint-e19.notion.site/20c2e7475de28051a051da32a5b57d2a">
+      <span class="card-emoji">🔄</span>
+      <div class="card-name">Здоровые привычки</div>
+      <div class="card-interest">Рутины, поведение, осознанность</div>
+    </a>
+    <a class="card ca" href="https://witty-lint-e19.notion.site/3612e7475de280b3a9b2e65478f0d2a3">
+      <span class="card-emoji">🌙</span>
+      <div class="card-name">Сон и хронобиология</div>
+      <div class="card-interest">Циркадные ритмы, мелатонин</div>
+    </a>
+    <a class="card ca" href="https://witty-lint-e19.notion.site/3612e7475de2800c8b3defd78fa7d29f">
+      <span class="card-emoji">🏃</span>
+      <div class="card-name">Спорт и восстановление</div>
+      <div class="card-interest">Нагрузка, мышцы, восстановление</div>
+    </a>
+  </div>
+</div>
+
+<div class="group-block">
+  <div class="group-label"><div class="gdot" style="background:#D85A30"></div><span class="gname">Методы и инструменты</span></div>
+  <div class="cards c3">
+    <a class="card cc" href="https://witty-lint-e19.notion.site/20c2e7475de28074aeb5f1112e37af7f">
+      <span class="card-emoji">🌱</span>
+      <div class="card-name">Натуропатия</div>
+      <div class="card-interest">Травы, природные протоколы</div>
+    </a>
+    <a class="card cc" href="https://witty-lint-e19.notion.site/20c2e7475de28042bdc7f4caf96e21b1">
+      <span class="card-emoji">💊</span>
+      <div class="card-name">Лекарства и вещества</div>
+      <div class="card-interest">Препараты, дозы, взаимодействия</div>
+    </a>
+    <a class="card cc" href="https://witty-lint-e19.notion.site/20c2e7475de2815e8081e520a90b2b28">
+      <span class="card-emoji">📋</span>
+      <div class="card-name">Анализы и диагностика</div>
+      <div class="card-interest">Маркеры, нормы, интерпретация</div>
+    </a>
+  </div>
+</div>
+
+<div class="sec">
+  <span class="sec-name">Системы</span>
+  <div class="sec-line"></div>
+  <span class="sec-count">14 · физиологический уровень</span>
+</div>
+
+<div class="sys-grid">
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/3602e7475de281c38cc1e7ada70532b8">
+    <span class="sys-emoji">🦠</span>
+    <div class="sys-name">ЖКТ</div>
+    <div class="sys-sub">Желудок · Кишечник · Печень · Микробиота</div>
+    
+  </a>
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/3612e7475de2816b9a70faa0230868ae">
+    <span class="sys-emoji">⚙️</span>
+    <div class="sys-name">Метаболизм и энергия</div>
+    <div class="sys-sub">АТФ · Митохондрии · Гликолиз · Липолиз</div>
+    
+  </a>
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/3602e7475de281968474d1ed10d0f74b">
+    <span class="sys-emoji">🔬</span>
+    <div class="sys-name">Молекулярные механизмы</div>
+    <div class="sys-sub">mTOR · AMPK · NF-kB · NRF2 · JAK-STAT</div>
+    
+  </a>
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/20f2e7475de280e39b33c56490f9ae5f">
+    <span class="sys-emoji">🛡️</span>
+    <div class="sys-name">Иммунная и лимфатическая</div>
+    <div class="sys-sub">Лимфоузлы · Т-клетки · Цитокины · Тимус</div>
+    
+  </a>
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/3602e7475de281cebff4d891bcc82586">
+    <span class="sys-emoji">🔄</span>
+    <div class="sys-name">Эндокринная система</div>
+    <div class="sys-sub">Щитовидная · Надпочечники · Гипофиз · Поджелудочная</div>
+    
+  </a>
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/3602e7475de2813aa351dfbaea06f859">
+    <span class="sys-emoji">⚡</span>
+    <div class="sys-name">Нервная система</div>
+    <div class="sys-sub">Мозг · Нейромедиаторы · Ось кишечник–мозг · ВНС</div>
+    
+  </a>
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/3602e7475de2818f9a46fdc87ec58976">
+    <span class="sys-emoji">❤️</span>
+    <div class="sys-name">Сердечно-сосудистая</div>
+    <div class="sys-sub">Сердце · Сосуды · Кровь · Эритроциты · Гемоглобин</div>
+    
+  </a>
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/2102e7475de280d9a835ffdf997a9fb8">
+    <span class="sys-emoji">🔓</span>
+    <div class="sys-name">Детоксикация</div>
+    <div class="sys-sub">Печень · Почки · Глутатион · CYP450 · Фазы детокса</div>
+    
+  </a>
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/3602e7475de2813f8037e7dda1e28919">
+    <span class="sys-emoji">👁️</span>
+    <div class="sys-name">Органы зрения</div>
+    <div class="sys-sub">Сетчатка · Макула · Лютеин · Зеаксантин · DHA</div>
+    
+  </a>
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/3602e7475de28179a1a1c57d624e62e1">
+    <span class="sys-emoji">🪞</span>
+    <div class="sys-name">Покровная система</div>
+    <div class="sys-sub">Кожа · Волосы · Ногти · Коллаген · Сальные железы</div>
+    
+  </a>
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/3602e7475de2813b8142e274e8853c3a">
+    <span class="sys-emoji">🌺</span>
+    <div class="sys-name">Репродуктивная</div>
+    <div class="sys-sub">Яичники · Матка · Эстроген · Прогестерон · Фертильность</div>
+    
+  </a>
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/3602e7475de281889a5bc9d772307a10">
+    <span class="sys-emoji">🦴</span>
+    <div class="sys-name">Опорно-двигательная</div>
+    <div class="sys-sub">Кости · Суставы · Мышцы · Коллаген · Кальций</div>
+    
+  </a>
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/3602e7475de28115b718efa6fc1c2ba3">
+    <span class="sys-emoji">💧</span>
+    <div class="sys-name">Выделительная</div>
+    <div class="sys-sub">Почки · Мочевой пузырь · Электролиты · Фильтрация</div>
+    
+  </a>
+  <a class="sys-card" href="https://witty-lint-e19.notion.site/3602e7475de281acb894d43e2a439984">
+    <span class="sys-emoji">🫁</span>
+    <div class="sys-name">Дыхательная</div>
+    <div class="sys-sub">Лёгкие · Альвеолы · CO₂ · O₂ · pH крови</div>
+    
+  </a>
+</div>
+
+<a class="res-block" href="https://witty-lint-e19.notion.site/20c2e7475de28047a9ade2d7a5de24b2">
+  <span class="res-emoji">📚</span>
+  <div>
+    <div class="res-title">Ресурсы</div>
+    <div class="res-sub">Книги, статьи, видео — что почитать и посмотреть</div>
+  </div>
+  <span class="res-arr">→</span>
+</a>
+
+<div class="legend">
+  <div class="leg"><div class="ldot" style="background:#1D9E75"></div>База</div>
+  <div class="leg"><div class="ldot" style="background:#378ADD"></div>Физиология</div>
+  <div class="leg"><div class="ldot" style="background:#7F77DD"></div>Наука</div>
+  <div class="leg"><div class="ldot" style="background:#D4537E"></div>Целевые группы</div>
+  <div class="leg"><div class="ldot" style="background:#BA7517"></div>Образ жизни</div>
+  <div class="leg"><div class="ldot" style="background:#D85A30"></div>Методы</div>
+</div>
+
+</div>
+</body>
+</html>
